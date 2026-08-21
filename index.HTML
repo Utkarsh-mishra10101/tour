@@ -1134,10 +1134,7 @@ async function sendChatMessage() {
     const query = input.value.trim();
     if (!query) return;
 
-    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-        GEMINI_API_KEY = prompt("Please enter your Gemini API Key to enable AI chat:");
-        if (!GEMINI_API_KEY) return;
-    }
+   
 
     const chatMessages = document.getElementById('chat-messages');
 

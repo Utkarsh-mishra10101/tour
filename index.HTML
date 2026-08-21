@@ -1116,50 +1116,131 @@
             sendChatMessage();
         }
 
-        function sendChatMessage() {
-            const input = document.getElementById('chat-input');
-            const query = input.value.trim();
-            if (!query) return;
+        /* ==========================================================================
+ /* ==========================================================================
+   6. LIVE GEMINI API CHATBOT INTEGRATION
+   ========================================================================== */
 
-            const chatMessages = document.getElementById('chat-messages');
+// Store your API key here or let the user supply one safely
+let GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
 
-            // Render User Message
-            const userMsg = document.createElement('div');
-            userMsg.className = "flex gap-3 justify-end";
-            userMsg.innerHTML = `
-                <div class="bg-brand-orange text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] space-y-1">
-                    <p>${query}</p>
-                </div>
-            `;
-            chatMessages.appendChild(userMsg);
-            input.value = "";
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+function askAI(query) {
+    document.getElementById('chat-input').value = query;
+    sendChatMessage();
+}
 
-            // Generate Smart AI Response
-            setTimeout(() => {
-                let aiResponse = "";
-                const lower = query.toLowerCase();
+async function sendChatMessage() {
+    const input = document.getElementById('chat-input');
+    const query = input.value.trim();
+    if (!query) return;
 
-                if (lower.includes('4,000') || lower.includes('cheap') || lower.includes('cheaper')) {
-                    aiResponse = `Based on your budget constraint, I recommend **Kanatal** or **Bundi**. You can take a sleeper train/HRTC Volvo, stay in budget homestays (~₹800/night), and easily complete a 2-3 day trip under ₹4,500 total!`;
-                } else if (lower.includes('quiet') || lower.includes('jaipur')) {
-                    aiResponse = `Near Jaipur, skip the crowded Amer Fort and head to **Bundi** (3.5 hrs away). It features blue-painted houses, stunning quiet stepwells, and 80% fewer tourists at half the price.`;
-                } else {
-                    aiResponse = `I've analyzed your preferences! I recommend checking out **Tirthan Valley** or **Kanatal**. Both offer a high Hidden Gem Score (>90/100) with low crowd levels and pristine scenic beauty.`;
-                }
+    if (!GEMINI_API_KEY || GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
+        GEMINI_API_KEY = prompt("Please enter your Gemini API Key to enable AI chat:");
+        if (!GEMINI_API_KEY) return;
+    }
 
-                const aiMsg = document.createElement('div');
-                aiMsg.className = "flex gap-3";
-                aiMsg.innerHTML = `
-                    <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
-                    <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text space-y-2">
-                        <p>${aiResponse}</p>
-                    </div>
-                `;
-                chatMessages.appendChild(aiMsg);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }, 600);
+    const chatMessages = document.getElementById('chat-messages');
+
+    // 1. Render User Message
+    const userMsg = document.createElement('div');
+    userMsg.className = "flex gap-3 justify-end";
+    userMsg.innerHTML = `
+        <div class="bg-brand-orange text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] space-y-1">
+            <p>${escapeHtml(query)}</p>
+        </div>
+    `;
+    chatMessages.appendChild(userMsg);
+    input.value = "";
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // 2. Render Temporary "Thinking..." Indicator
+    const loadingId = "loading-" + Date.now();
+    const loadingMsg = document.createElement('div');
+    loadingMsg.id = loadingId;
+    loadingMsg.className = "flex gap-3";
+    loadingMsg.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
+        <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text">
+            <p class="animate-pulse flex items-center gap-1">
+                <i class="fa-solid fa-spinner fa-spin"></i> Finding hidden spots...
+            </p>
+        </div>
+    `;
+    chatMessages.appendChild(loadingMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // 3. Make the API Call to Gemini (Updated Endpoint Model)
+    try {
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [
+                                {
+                                    text: `You are an AI Travel Assistant for "Hidden India", an app focused on budget-friendly offbeat destinations in India. Context on active filter: Starting from ${currentPlannerState.startLocation}, budget ₹${currentPlannerState.budget}, duration ${currentPlannerState.duration} days. Answer this query concisely using bolding for key places: ${query}`
+                                }
+                            ]
+                        }
+                    ]
+                })
+            }
+        );
+
+        const data = await response.json();
+        
+        // Remove loading state
+        document.getElementById(loadingId)?.remove();
+
+        if (data.error) {
+            showAiMessage(`⚠️ Error: ${data.error.message}`);
+            return;
         }
+
+        // Extract Gemini's text response
+        const candidate = data.candidates?.[0];
+        const textResponse = candidate?.content?.parts?.[0]?.text || "Sorry, I couldn't process that response.";
+        
+        // Render response with basic markdown formatting (* -> bold)
+        const formattedText = textResponse
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+
+        showAiMessage(formattedText);
+
+    } catch (err) {
+        document.getElementById(loadingId)?.remove();
+        showAiMessage("⚠️ Network error occurred while connecting to Gemini API.");
+        console.error("Gemini API Error:", err);
+    }
+}
+
+function showAiMessage(htmlContent) {
+    const chatMessages = document.getElementById('chat-messages');
+    const aiMsg = document.createElement('div');
+    aiMsg.className = "flex gap-3";
+    aiMsg.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
+        <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text space-y-2">
+            <p>${htmlContent}</p>
+        </div>
+    `;
+    chatMessages.appendChild(aiMsg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML;
+}
+        
 
         function resetChat() {
             const chatMessages = document.getElementById('chat-messages');

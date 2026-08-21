@@ -1172,14 +1172,12 @@ async function sendChatMessage() {
     // 3. Make the API Call to Gemini (Updated Endpoint Model)
     // Make the API call to your Vercel serverless function
     try {
-        const response = await fetch('/api/chat', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ query, currentPlannerState })
-        });
-
+        // Replace the Google fetch URL with your local serverless endpoint:
+const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, currentPlannerState })
+});
         const data = await response.json();
         
         // Remove loading state

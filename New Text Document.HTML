@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden India — AI-Powered Discovery & Budget Travel Engine</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            bg: '#FBF9F5',
+                            card: '#FFFFFF',
+                            green: '#1B3B2B',
+                            lightgreen: '#2D5A40',
+                            orange: '#E06D3B',
+                            accent: '#F4A261',
+                            cream: '#F4EFE6',
+                            text: '#222222',
+                            muted: '#6B7280'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FBF9F5;
+            color: #222222;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4EFE6;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2D5A40;
+            border-radius: 4px;
+        }
+
+        .gradient-overlay {
+            background: linear-gradient(180deg, rgba(27, 59, 43, 0.2) 0%, rgba(27, 59, 43, 0.85) 100%);
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #E06D3B;
+            cursor: pointer;
+            border: 3px solid #FFFFFF;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .map-pin {
+            transition: transform 0.2s ease, z-index 0.2s ease;
+        }
+        .map-pin:hover {
+            transform: scale(1.3) translateY(-5px);
+            z-index: 50;
+        }
+
+        .interest-chip.active {
+            background-color: #1B3B2B;
+            color: #FFFFFF;
+            border-color: #1B3B2B;
+        }
+
+        /* Glassmorphism subtle accent */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(244, 239, 230, 0.6);
+        }
+    </style>
+</head>
+<body class="antialiased text-brand-text selection:bg-brand-orange selection:text-white">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 glass-panel border-b border-brand-cream/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')">
+                <div class="w-10 h-10 rounded-full bg-brand-green flex items-center justify-center text-brand-orange font-bold text-xl shadow-sm">
+                    <i class="fa-solid fa-[#10B981] fa-compass"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight text-brand-green block leading-none">HIDDEN INDIA</span>
+                    <span class="text-[10px] font-semibold text-brand-orange tracking-widest uppercase">Discovery & Budget Engine</span>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center space-x-8 text-sm font-semibold text-brand-green/80">
+                <a href="#planner" class="hover:text-brand-orange transition-colors">Trip Planner</a>
+                <a href="#discover" class="hover:text-brand-orange transition-colors">Hidden Gems</a>
+                <a href="#comparison" class="hover:text-brand-orange transition-colors">Popular vs Hidden</a>
+                <a href="#map-section" class="hover:text-brand-orange transition-colors">Interactive Map</a>
+                <a href="#ai-assistant" class="hover:text-brand-orange transition-colors">AI Assistant</a>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="scrollToSection('planner')" class="bg-brand-orange hover:bg-opacity-90 text-white text-sm font-bold px-5 py-2.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 transform hover:-translate-y-0.5">
+                    Plan My Trip
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-brand-green py-20 px-4">
+        <!-- Background Imagery with Dark Gradient overlay -->
+        <div class="absolute inset-0 z-0 opacity-40">
+            <img src="https://images.unsplash.com/photo-1506461883276-594a12b11cf3?auto=format&fit=crop&w=2000&q=80" alt="Himalayas landscape" class="w-full h-full object-cover">
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-b from-brand-green/80 via-brand-green/95 to-brand-green z-0"></div>
+
+        <div class="relative z-10 max-w-5xl mx-auto text-center space-y-8">
+            <div class="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full text-brand-accent text-xs font-semibold uppercase tracking-wider border border-white/10">
+                <i class="fa-solid fa-sparkles text-brand-orange"></i>
+                <span>Smart AI-Powered Travel Engine</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold text-brand-cream tracking-tight leading-none">
+                Discover the India You <br class="hidden sm:inline"/>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange via-brand-accent to-amber-200">Haven't Seen Yet.</span>
+            </h1>
+
+            <p class="max-w-2xl mx-auto text-base sm:text-lg text-brand-cream/80 font-normal leading-relaxed">
+                AI-powered travel discovery for hidden gems, authentic local experiences, and tailored budget-friendly trips across India. Skip the tourist traps.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <button onclick="scrollToSection('planner')" class="w-full sm:w-auto bg-brand-orange hover:bg-orange-600 text-white font-bold text-base px-8 py-4 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 transform hover:-translate-y-1">
+                    <span>Explore Hidden India</span>
+                    <i class="fa-solid fa-arrow-right text-sm"></i>
+                </button>
+                <button onclick="scrollToSection('comparison')" class="w-full sm:w-auto bg-white/10 hover:bg-white/20 text-brand-cream font-semibold text-base px-8 py-4 rounded-full border border-white/20 transition-all duration-300 backdrop-blur-sm">
+                    Popular vs Hidden
+                </button>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-10 text-left border-t border-white/10">
+                <div>
+                    <p class="text-2xl font-bold text-brand-accent">250+</p>
+                    <p class="text-xs text-brand-cream/60 uppercase">Curated Hidden Gems</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-brand-accent">₹3,000</p>
+                    <p class="text-xs text-brand-cream/60 uppercase">Average Weekend Trip</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-brand-accent">100%</p>
+                    <p class="text-xs text-brand-cream/60 uppercase">Custom Score AI Ranking</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-brand-accent">28</p>
+                    <p class="text-xs text-brand-cream/60 uppercase">States & UTs Covered</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- QUICK TRIP PLANNER & HIDDENNESS SLIDER -->
+    <section id="planner" class="py-16 px-4 max-w-7xl mx-auto -mt-12 relative z-20">
+        <div class="bg-brand-card rounded-3xl shadow-xl border border-brand-cream p-6 sm:p-10">
+            <div class="mb-8 border-b border-gray-100 pb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-brand-green">Configure Your Travel Engine</h2>
+                        <p class="text-brand-muted text-sm mt-1">Set parameters to recalculate real-time recommendation rankings.</p>
+                    </div>
+                    <div class="bg-brand-cream/60 p-2.5 rounded-2xl flex items-center space-x-3">
+                        <i class="fa-solid fa-sliders text-brand-orange text-lg"></i>
+                        <span class="text-xs font-bold uppercase tracking-wider text-brand-green">Interactive Discovery Filter</span>
+                    </div>
+                </div>
+            </div>
+
+            <form id="trip-planner-form" onsubmit="event.preventDefault(); runEngine();" class="space-y-8">
+                <!-- Main Grid Inputs -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Starting Location -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-brand-green">
+                            <i class="fa-solid fa-location-dot text-brand-orange mr-1"></i> Starting From
+                        </label>
+                        <select id="start-location" class="w-full bg-brand-bg border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-brand-text focus:outline-none focus:border-brand-orange">
+                            <option value="Delhi">Delhi / NCR</option>
+                            <option value="Jaipur">Jaipur, Rajasthan</option>
+                            <option value="Mumbai">Mumbai, Maharashtra</option>
+                            <option value="Bengaluru">Bengaluru, Karnataka</option>
+                            <option value="Kolkata">Kolkata, West Bengal</option>
+                            <option value="Chandigarh">Chandigarh</option>
+                        </select>
+                    </div>
+
+                    <!-- Total Budget -->
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-xs font-bold uppercase tracking-wider text-brand-green">
+                                <i class="fa-solid fa-wallet text-brand-orange mr-1"></i> Total Budget
+                            </label>
+                            <span id="budget-display" class="text-xs font-extrabold text-brand-orange">₹8,000</span>
+                        </div>
+                        <input type="range" id="budget-range" min="2000" max="30000" step="1000" value="8000" oninput="updateBudgetDisplay(this.value)" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider accent-brand-orange">
+                        <div class="flex justify-between text-[10px] text-brand-muted font-semibold">
+                            <span>₹2,000</span>
+                            <span>₹15,000</span>
+                            <span>₹30,000+</span>
+                        </div>
+                    </div>
+
+                    <!-- Trip Duration -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-brand-green">
+                            <i class="fa-solid fa-calendar-days text-brand-orange mr-1"></i> Duration (Days)
+                        </label>
+                        <select id="duration-select" class="w-full bg-brand-bg border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-brand-text focus:outline-none focus:border-brand-orange">
+                            <option value="2">2 Days (Weekend Quickie)</option>
+                            <option value="3" selected>3 Days (Long Weekend)</option>
+                            <option value="5">5 Days (Mid Explorer)</option>
+                            <option value="7">7 Days (Full Circuit)</option>
+                        </select>
+                    </div>
+
+                    <!-- Travel Style -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-brand-green">
+                            <i class="fa-solid fa-users text-brand-orange mr-1"></i> Travel Group
+                        </label>
+                        <select id="group-select" class="w-full bg-brand-bg border border-gray-200 rounded-xl px-4 py-3 text-sm font-semibold text-brand-text focus:outline-none focus:border-brand-orange">
+                            <option value="Solo">Solo Traveler</option>
+                            <option value="Couple">Couple</option>
+                            <option value="Friends" selected>Friends / Group</option>
+                            <option value="Family">Family</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- HIDDENNESS SLIDER (CORE DIFFERENTIATOR) -->
+                <div class="bg-brand-cream/40 p-6 rounded-2xl border border-brand-cream">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <div>
+                            <label class="text-sm font-extrabold text-brand-green uppercase tracking-wide flex items-center gap-2">
+                                <i class="fa-solid fa-eye-slash text-brand-orange"></i>
+                                Hiddenness Preference Engine
+                            </label>
+                            <p class="text-xs text-brand-muted">Control how heavily the algorithm prioritizes offbeat gems vs famous spots.</p>
+                        </div>
+                        <span id="hiddenness-label" class="inline-block bg-brand-green text-brand-accent text-xs font-bold px-3 py-1 rounded-full text-center">
+                            Balanced (Mix of popular & offbeat)
+                        </span>
+                    </div>
+
+                    <input type="range" id="hiddenness-slider" min="1" max="4" step="1" value="2" oninput="updateHiddennessText(this.value)" class="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer range-slider">
+
+                    <div class="grid grid-cols-4 text-center text-xs font-bold mt-3 text-brand-green">
+                        <div class="cursor-pointer" onclick="setSliderValue(1)">Popular</div>
+                        <div class="cursor-pointer" onclick="setSliderValue(2)">Balanced</div>
+                        <div class="cursor-pointer" onclick="setSliderValue(3)">Hidden Gem</div>
+                        <div class="cursor-pointer" onclick="setSliderValue(4)">Offbeat</div>
+                    </div>
+                </div>
+
+                <!-- Interest Selection Chips -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-brand-green">
+                        <i class="fa-solid fa-heart text-brand-orange mr-1"></i> Select Interests & Vibes
+                    </label>
+                    <div class="flex flex-wrap gap-2.5" id="interest-chips">
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Nature" class="interest-chip active border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-tree"></i> Nature
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Mountains" class="interest-chip active border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-mountain"></i> Mountains
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="History" class="interest-chip border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-landmark"></i> History
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Adventure" class="interest-chip border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-person-hiking"></i> Adventure
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Relaxation" class="interest-chip border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-spa"></i> Relaxation
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Culture" class="interest-chip border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-gopuram"></i> Culture
+                        </button>
+                        <button type="button" onclick="toggleInterest(this)" data-interest="Photography" class="interest-chip border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-full text-xs font-bold transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-camera"></i> Photography
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white font-extrabold text-base py-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-3">
+                        <i class="fa-solid fa-wand-magic-sparkles text-brand-orange"></i>
+                        <span>Find My Recommendations</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- HIDDEN GEMS DISCOVERY GRID -->
+    <section id="discover" class="py-16 px-4 max-w-7xl mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+            <div>
+                <div class="inline-flex items-center space-x-2 bg-brand-orange/10 px-3 py-1 rounded-full text-brand-orange text-xs font-bold mb-2">
+                    <i class="fa-solid fa-gem"></i>
+                    <span>Algorithmic Rankings</span>
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-green">Recommended Hidden Destinations</h2>
+                <p class="text-brand-muted text-sm mt-1">Ranked dynamically by budget fit, distance from your location, and Hidden Gem Score.</p>
+            </div>
+            <div class="text-xs text-brand-muted font-medium bg-brand-cream/50 px-4 py-2 rounded-xl border border-brand-cream">
+                Showing top matches for: <span id="active-filter-desc" class="font-bold text-brand-green">Delhi | ₹8,000 | Balanced</span>
+            </div>
+        </div>
+
+        <!-- Destination Cards Container -->
+        <div id="destinations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Dynamically Populated by JS -->
+        </div>
+    </section>
+
+    <!-- POPULAR VS HIDDEN COMPARISON SECTION -->
+    <section id="comparison" class="py-20 bg-brand-cream/40 border-y border-brand-cream">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="text-center max-w-2xl mx-auto mb-14">
+                <span class="text-xs font-extrabold text-brand-orange uppercase tracking-widest">Smart Alternatives</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-green mt-1">Popular vs. Hidden Gem Alternatives</h2>
+                <p class="text-brand-muted text-sm mt-2">Ditch overcrowding and inflated prices. Swap overcrowded tourist hotspots for identical views at half the cost.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Pair 1 -->
+                <div class="bg-brand-card rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-brand-muted">North India Circuit</span>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Save ~60% Budget</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 p-4">
+                        <div class="space-y-2 opacity-75">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-gray-900/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Popular</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-gray-800">Manali</h4>
+                            <p class="text-[11px] text-gray-500">Crowded, high hotel rates, traffic jams at Solang.</p>
+                        </div>
+                        <div class="space-y-2 border-l border-brand-orange/20 pl-2">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1597074866923-dc0589150358?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-brand-orange text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Hidden Gem</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-brand-green">Tirthan Valley</h4>
+                            <p class="text-[11px] text-brand-muted">Pristine river, quiet homestays, Great Himalayan NP.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-brand-green/5 mt-auto border-t border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-brand-green">Hidden Gem Score: 92/100</span>
+                        <button onclick="openPlannerFor('Tirthan Valley')" class="text-xs font-bold text-brand-orange hover:underline">Plan Tirthan Trip &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- Pair 2 -->
+                <div class="bg-brand-card rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-brand-muted">Rajasthan Heritage</span>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Save ~45% Budget</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 p-4">
+                        <div class="space-y-2 opacity-75">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-gray-900/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Popular</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-gray-800">Jaipur</h4>
+                            <p class="text-[11px] text-gray-500">Commercialized forts, heavy city traffic.</p>
+                        </div>
+                        <div class="space-y-2 border-l border-brand-orange/20 pl-2">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1588083949404-9e7012017006?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-brand-orange text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Hidden Gem</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-brand-green">Bundi</h4>
+                            <p class="text-[11px] text-brand-muted">Authentic blue houses, intricate stepwells, peaceful fort.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-brand-green/5 mt-auto border-t border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-brand-green">Hidden Gem Score: 88/100</span>
+                        <button onclick="openPlannerFor('Bundi')" class="text-xs font-bold text-brand-orange hover:underline">Plan Bundi Trip &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- Pair 3 -->
+                <div class="bg-brand-card rounded-2xl overflow-hidden shadow-md border border-gray-100 flex flex-col">
+                    <div class="p-4 bg-gray-50 border-b border-gray-100 flex justify-between items-center">
+                        <span class="text-xs font-bold uppercase text-brand-muted">Garhwal Retreat</span>
+                        <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded">Save ~50% Budget</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 p-4">
+                        <div class="space-y-2 opacity-75">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1606293459209-9069d25514f7?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-gray-900/80 text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Popular</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-gray-800">Rishikesh</h4>
+                            <p class="text-[11px] text-gray-500">Noisy cafes, crowded ghats during peak months.</p>
+                        </div>
+                        <div class="space-y-2 border-l border-brand-orange/20 pl-2">
+                            <div class="relative h-28 rounded-lg overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover">
+                                <span class="absolute top-1 left-1 bg-brand-orange text-white text-[9px] font-bold px-1.5 py-0.5 rounded">Hidden Gem</span>
+                            </div>
+                            <h4 class="font-bold text-sm text-brand-green">Kanatal</h4>
+                            <p class="text-[11px] text-brand-muted">Dense pine forests, camping under stars, zero crowds.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-brand-green/5 mt-auto border-t border-gray-100 flex items-center justify-between">
+                        <span class="text-xs font-bold text-brand-green">Hidden Gem Score: 90/100</span>
+                        <button onclick="openPlannerFor('Kanatal')" class="text-xs font-bold text-brand-orange hover:underline">Plan Kanatal Trip &rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE MAP DISCOVERY SECTION -->
+    <section id="map-section" class="py-16 px-4 max-w-7xl mx-auto">
+        <div class="mb-8">
+            <span class="text-xs font-extrabold text-brand-orange uppercase tracking-widest">Geospatial Explorer</span>
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-brand-green mt-1">Explore Destinations on the Map</h2>
+            <p class="text-brand-muted text-sm mt-1">Click pins to inspect scores, distance from starting hub, and estimated trip budgets.</p>
+        </div>
+
+        <!-- Custom Map Interactive Canvas -->
+        <div class="relative w-full h-[500px] bg-[#E5E9E1] rounded-3xl overflow-hidden border border-gray-200 shadow-inner flex items-center justify-center">
+            <!-- Simulated Map Graphic Overlay (Stylized Map Vector Background) -->
+            <svg class="absolute inset-0 w-full h-full opacity-30 pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 0,100 Q 200,150 400,100 T 800,200 T 1200,100" fill="none" stroke="#2D5A40" stroke-width="2" stroke-dasharray="6,6"/>
+                <path d="M 100,0 Q 300,300 500,600" fill="none" stroke="#E06D3B" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <circle cx="200" cy="200" r="180" fill="none" stroke="#1B3B2B" stroke-width="1" stroke-dasharray="2,2"/>
+                <circle cx="600" cy="300" r="250" fill="none" stroke="#1B3B2B" stroke-width="1" stroke-dasharray="2,2"/>
+            </svg>
+
+            <!-- Map Controls / Legend -->
+            <div class="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-md border border-gray-100 text-xs space-y-2">
+                <div class="font-bold text-brand-green mb-1">Map Legend</div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-600 inline-block"></span>
+                    <span>Hidden Gems</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-blue-600 inline-block"></span>
+                    <span>Popular Hotspots</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                    <span>Budget Favorites</span>
+                </div>
+            </div>
+
+            <!-- Dynamic Pin Container -->
+            <div id="map-pins-container" class="relative w-full h-full">
+                <!-- Rendered by JS -->
+            </div>
+
+            <!-- Interactive Modal / Tooltip Overlay -->
+            <div id="map-card-popup" class="hidden absolute bottom-6 left-6 right-6 sm:right-auto sm:max-w-sm z-30 bg-white p-5 rounded-2xl shadow-2xl border border-gray-100 transition-all">
+                <!-- Dynamic Content injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- AI TRAVEL ASSISTANT & ITINERARY CONVERSATIONAL MODIFIER -->
+    <section id="ai-assistant" class="py-20 bg-brand-green text-brand-cream relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-12 gap-12 items-start relative z-10">
+            <!-- Left Info -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="inline-flex items-center space-x-2 bg-brand-orange/20 px-3 py-1 rounded-full text-brand-accent text-xs font-bold">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>Conversational Travel AI</span>
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight">Ask Hidden India AI</h2>
+                <p class="text-brand-cream/80 text-sm leading-relaxed">
+                    Have specific constraints? Ask your AI copilot to recalculate itineraries, suggest hidden spots based on mood, or tweak budget allocation in real time.
+                </p>
+
+                <!-- Preset Questions -->
+                <div class="space-y-2 pt-2">
+                    <p class="text-xs font-bold text-brand-accent uppercase tracking-wider">Try Asking:</p>
+                    <button onclick="askAI('Where can I go for ₹4,000 from Delhi for 2 days?')" class="block w-full text-left bg-white/5 hover:bg-white/10 p-3 rounded-xl text-xs font-medium border border-white/10 transition">
+                        💬 "Where can I go for ₹4,000 from Delhi for 2 days?"
+                    </button>
+                    <button onclick="askAI('Find quiet nature places near Jaipur that tourists avoid.')" class="block w-full text-left bg-white/5 hover:bg-white/10 p-3 rounded-xl text-xs font-medium border border-white/10 transition">
+                        💬 "Find quiet nature places near Jaipur that tourists avoid."
+                    </button>
+                    <button onclick="askAI('Make my current itinerary budget cheaper by 30%.')" class="block w-full text-left bg-white/5 hover:bg-white/10 p-3 rounded-xl text-xs font-medium border border-white/10 transition">
+                        💬 "Make my current itinerary budget cheaper by 30%."
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Container -->
+            <div class="lg:col-span-7 bg-brand-card text-brand-text rounded-3xl p-6 shadow-2xl border border-white/10 flex flex-col h-[520px]">
+                <!-- Chat Header -->
+                <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-brand-orange/20 text-brand-orange flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-sparkles"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-sm text-brand-green">Hidden India AI Assistant</h4>
+                            <span class="text-[10px] text-emerald-600 font-bold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="resetChat()" class="text-xs text-brand-muted hover:text-brand-orange">Clear Chat</button>
+                </div>
+
+                <!-- Chat Messages Body -->
+                <div id="chat-messages" class="flex-1 overflow-y-auto py-4 space-y-4 text-xs font-medium">
+                    <!-- Default Assistant Welcome -->
+                    <div class="flex gap-3">
+                        <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
+                        <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text space-y-2">
+                            <p>Namaste! I am your AI travel copilot. Ask me to find hidden gems, optimize your travel budget, or generate custom itineraries on the fly.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input Form -->
+                <form onsubmit="event.preventDefault(); sendChatMessage();" class="pt-3 border-t border-gray-100 flex gap-2">
+                    <input id="chat-input" type="text" placeholder="Type a request (e.g. 'Plan 3 days in Tirthan under ₹6000')" class="flex-1 bg-brand-bg border border-gray-200 rounded-xl px-4 py-3 text-xs font-semibold focus:outline-none focus:border-brand-orange">
+                    <button type="submit" class="bg-brand-orange hover:bg-orange-600 text-white px-5 py-3 rounded-xl text-xs font-bold transition">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ITINERARY & BUDGET DETAIL MODAL -->
+    <div id="itinerary-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-100 flex flex-col">
+            <!-- Modal Header -->
+            <div id="modal-header" class="relative h-48 bg-brand-green p-6 text-white flex flex-col justify-end">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/30 hover:bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div id="modal-header-content">
+                    <!-- Dynamic -->
+                </div>
+            </div>
+
+            <!-- Modal Content Body -->
+            <div class="p-6 space-y-6">
+                <!-- Budget Breakdown Engine Box -->
+                <div class="bg-brand-cream/40 p-5 rounded-2xl border border-brand-cream space-y-3">
+                    <h4 class="text-xs font-extrabold uppercase tracking-wider text-brand-green flex items-center gap-2">
+                        <i class="fa-solid fa-calculator text-brand-orange"></i> Estimated Budget Breakdown Engine
+                    </h4>
+                    <div id="modal-budget-breakdown" class="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+
+                <!-- Day by Day Itinerary -->
+                <div class="space-y-4">
+                    <h4 class="text-sm font-extrabold text-brand-green uppercase tracking-wider">AI Generated Day-by-Day Itinerary</h4>
+                    <div id="modal-itinerary-days" class="space-y-4">
+                        <!-- Dynamic -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 bg-gray-50 border-t border-gray-100 flex justify-between items-center">
+                <span class="text-xs text-brand-muted font-semibold">Need edits? Use the AI Assistant to adjust.</span>
+                <button onclick="closeModal()" class="bg-brand-green text-white text-xs font-bold px-6 py-2.5 rounded-full">Close Itinerary</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-brand-green text-brand-cream py-12 border-t border-white/10 text-xs">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-brand-orange text-white flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-compass"></i>
+                </div>
+                <span class="font-extrabold tracking-tight text-sm text-white">HIDDEN INDIA</span>
+            </div>
+            <p class="text-brand-cream/60">© 2026 Hidden India. Promoting Sustainable & Offbeat Travel across Indian States.</p>
+            <div class="flex space-x-4 text-brand-cream/80">
+                <a href="#" class="hover:text-brand-orange"><i class="fa-brands fa-instagram text-base"></i></a>
+                <a href="#" class="hover:text-brand-orange"><i class="fa-brands fa-x-twitter text-base"></i></a>
+                <a href="#" class="hover:text-brand-orange"><i class="fa-brands fa-github text-base"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+        /* ==========================================================================
+           1. DATASET SCHEMA & SEED DESTINATIONS DATA
+           ========================================================================== */
+        const DESTINATIONS = [
+            {
+                id: "tirthan-valley",
+                name: "Tirthan Valley",
+                state: "Himachal Pradesh",
+                coordinates: { lat: 31.63, lng: 77.34, mapX: 35, mapY: 28 },
+                description: "Gatekeeper to Great Himalayan National Park with crystal clear trout rivers, pine forests, and uncrowded wooden hamlets.",
+                popularityScore: 25,
+                hiddenScore: 92,
+                scenicScore: 96,
+                uniquenessScore: 90,
+                accessibilityScore: 70,
+                safetyScore: 95,
+                averageDailyBudget: 1800,
+                estimatedTransportCost: 1200, // From Delhi
+                idealDuration: 3,
+                interests: ["Nature", "Mountains", "Adventure", "Relaxation", "Photography"],
+                bestSeasons: ["March", "April", "May", "October", "November"],
+                crowdLevel: "low",
+                nearbyDestinations: ["Shoja", "Jibhi", "Jalori Pass"],
+                imageUrl: "https://images.unsplash.com/photo-1597074866923-dc0589150358?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Delhi": 490, "Chandigarh": 250, "Jaipur": 730, "Mumbai": 1850, "Bengaluru": 2400, "Kolkata": 1900 }
+            },
+            {
+                id: "bundi",
+                name: "Bundi",
+                state: "Rajasthan",
+                coordinates: { lat: 25.44, lng: 75.64, mapX: 30, mapY: 55 },
+                description: "The blue city tourist traps forgot. Adorned with magnificent stepwells, pristine palaces, and vibrant artisan alleys.",
+                popularityScore: 30,
+                hiddenScore: 88,
+                scenicScore: 85,
+                uniquenessScore: 92,
+                accessibilityScore: 85,
+                safetyScore: 92,
+                averageDailyBudget: 1400,
+                estimatedTransportCost: 700,
+                idealDuration: 2,
+                interests: ["History", "Culture", "Photography", "Relaxation"],
+                bestSeasons: ["October", "November", "December", "January", "February"],
+                crowdLevel: "low",
+                nearbyDestinations: ["Chittorgarh", "Kota"],
+                imageUrl: "https://images.unsplash.com/photo-1588083949404-9e7012017006?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Delhi": 470, "Jaipur": 210, "Chandigarh": 710, "Mumbai": 920, "Bengaluru": 1700, "Kolkata": 1500 }
+            },
+            {
+                id: "kanatal",
+                name: "Kanatal",
+                state: "Uttarakhand",
+                coordinates: { lat: 30.41, lng: 78.33, mapX: 42, mapY: 34 },
+                description: "A serene hill village enveloped in apple orchards and dense deodar trees with panoramic views of snow peaks.",
+                popularityScore: 20,
+                hiddenScore: 90,
+                scenicScore: 89,
+                uniquenessScore: 80,
+                accessibilityScore: 80,
+                safetyScore: 98,
+                averageDailyBudget: 1600,
+                estimatedTransportCost: 900,
+                idealDuration: 2,
+                interests: ["Nature", "Mountains", "Relaxation", "Adventure"],
+                bestSeasons: ["All Year"],
+                crowdLevel: "low",
+                nearbyDestinations: ["Dhanaulti", "Chamba", "Tehri"],
+                imageUrl: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Delhi": 320, "Chandigarh": 230, "Jaipur": 580, "Mumbai": 1700, "Bengaluru": 2200, "Kolkata": 1600 }
+            },
+            {
+                id: "gokarna",
+                name: "Gokarna (Offbeat Beaches)",
+                state: "Karnataka",
+                coordinates: { lat: 14.54, lng: 74.31, mapX: 25, mapY: 82 },
+                description: "Lesser-crowded rustic beach treks along Kudle and Half Moon beaches, combining laid-back vibes with spirituality.",
+                popularityScore: 55,
+                hiddenScore: 72,
+                scenicScore: 91,
+                uniquenessScore: 84,
+                accessibilityScore: 78,
+                safetyScore: 90,
+                averageDailyBudget: 1500,
+                estimatedTransportCost: 1100,
+                idealDuration: 3,
+                interests: ["Nature", "Beaches", "Relaxation", "Adventure"],
+                bestSeasons: ["October", "November", "December", "January", "March"],
+                crowdLevel: "medium",
+                nearbyDestinations: ["Yana Rocks", "Murdeshwar"],
+                imageUrl: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Bengaluru": 480, "Mumbai": 700, "Delhi": 1900, "Kolkata": 2000, "Jaipur": 1650, "Chandigarh": 2100 }
+            },
+            {
+                id: "ziro-valley",
+                name: "Ziro Valley",
+                state: "Arunachal Pradesh",
+                coordinates: { lat: 27.53, lng: 93.83, mapX: 88, mapY: 42 },
+                description: "Home to the Apatani tribe, enchanted pine hills, terraced rice fields, and legendary acoustic music culture.",
+                popularityScore: 35,
+                hiddenScore: 95,
+                scenicScore: 98,
+                uniquenessScore: 99,
+                accessibilityScore: 50,
+                safetyScore: 94,
+                averageDailyBudget: 2000,
+                estimatedTransportCost: 2500,
+                idealDuration: 5,
+                interests: ["Culture", "Nature", "Photography", "Adventure"],
+                bestSeasons: ["September", "October", "March", "April"],
+                crowdLevel: "low",
+                nearbyDestinations: ["Itanagar", "Majuli"],
+                imageUrl: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Kolkata": 1100, "Delhi": 2200, "Bengaluru": 2900, "Mumbai": 2800, "Jaipur": 2400, "Chandigarh": 2300 }
+            },
+            {
+                id: "manali",
+                name: "Manali (Popular Hub)",
+                state: "Himachal Pradesh",
+                coordinates: { lat: 32.24, lng: 77.18, mapX: 33, mapY: 22 },
+                description: "Famous mountain destination with booming commercial cafes, adventure sports, and high tourist traffic.",
+                popularityScore: 95,
+                hiddenScore: 10,
+                scenicScore: 88,
+                uniquenessScore: 60,
+                accessibilityScore: 90,
+                safetyScore: 88,
+                averageDailyBudget: 3200,
+                estimatedTransportCost: 1500,
+                idealDuration: 4,
+                interests: ["Mountains", "Adventure", "Culture"],
+                bestSeasons: ["All Year"],
+                crowdLevel: "high",
+                nearbyDestinations: ["Solang", "Rohtang"],
+                imageUrl: "https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80",
+                hubDistances: { "Delhi": 530, "Chandigarh": 290, "Jaipur": 780, "Mumbai": 1900, "Bengaluru": 2500, "Kolkata": 2000 }
+            }
+        ];
+
+        /* ==========================================================================
+           2. STATE MANAGEMENT
+           ========================================================================== */
+        let currentPlannerState = {
+            startLocation: "Delhi",
+            budget: 8000,
+            duration: 3,
+            groupStyle: "Friends",
+            hiddennessLevel: 2, // 1: Popular, 2: Balanced, 3: Hidden Gem, 4: Offbeat
+            selectedInterests: ["Nature", "Mountains"]
+        };
+
+        /* ==========================================================================
+           3. CORE RECOMMENDATION ALGORITHM ENGINE
+           ========================================================================== */
+        /**
+         * Calculates custom Hidden Gem Score normalized 0-100
+         */
+        function calculateHiddenGemScore(dest) {
+            // Formula: (Scenic * 0.3) + (Uniqueness * 0.3) + ((100 - Popularity) * 0.25) + (Safety * 0.15)
+            const score = (dest.scenicScore * 0.30) +
+                          (dest.uniquenessScore * 0.30) +
+                          ((100 - dest.popularityScore) * 0.25) +
+                          (dest.safetyScore * 0.15);
+            return Math.min(100, Math.round(score));
+        }
+
+        /**
+         * Dynamic multi-factor scoring function:
+         * finalScore = budgetMatch*0.25 + interestMatch*0.20 + hiddennessMatch*0.20 + distanceScore*0.10 + scenic*0.10 + access*0.05 + safety*0.05 + season*0.05
+         */
+        function rankDestinations(state) {
+            return DESTINATIONS.map(dest => {
+                // 1. Budget Match Score
+                const totalTripEstimate = (dest.averageDailyBudget * state.duration) + dest.estimatedTransportCost;
+                let budgetMatch = 0;
+                if (totalTripEstimate <= state.budget) {
+                    budgetMatch = 100;
+                } else {
+                    const over = totalTripEstimate - state.budget;
+                    budgetMatch = Math.max(0, 100 - (over / 100));
+                }
+
+                // 2. Interest Match Score
+                const matchedInterests = dest.interests.filter(i => state.selectedInterests.includes(i));
+                const interestMatch = state.selectedInterests.length > 0 
+                    ? (matchedInterests.length / state.selectedInterests.length) * 100 
+                    : 70;
+
+                // 3. Hiddenness Slider Weighting Match
+                // Slider mapping: 1=Popular prioritized, 2=Balanced, 3=Hidden Gem, 4=Offbeat
+                let hiddennessMatch = 0;
+                const hiddenGemScore = calculateHiddenGemScore(dest);
+                if (state.hiddennessLevel === 1) {
+                    hiddennessMatch = dest.popularityScore;
+                } else if (state.hiddennessLevel === 2) {
+                    hiddennessMatch = 100 - Math.abs(dest.popularityScore - 40);
+                } else if (state.hiddennessLevel === 3) {
+                    hiddennessMatch = hiddenGemScore;
+                } else { // 4: Offbeat
+                    hiddennessMatch = dest.hiddenScore;
+                }
+
+                // 4. Distance / Hub Accessibility Score
+                const distanceKm = dest.hubDistances[state.startLocation] || 600;
+                let distanceScore = Math.max(10, 100 - (distanceKm / 15));
+
+                // 5. Aggregate Final Weighted Match Score
+                const finalScore = Math.round(
+                    (budgetMatch * 0.25) +
+                    (interestMatch * 0.20) +
+                    (hiddennessMatch * 0.20) +
+                    (distanceScore * 0.10) +
+                    (dest.scenicScore * 0.10) +
+                    (dest.accessibilityScore * 0.05) +
+                    (dest.safetyScore * 0.05) +
+                    (85 * 0.05) // season baseline
+                );
+
+                return {
+                    ...dest,
+                    calculatedHiddenGemScore: hiddenGemScore,
+                    totalTripCostEstimate: totalTripEstimate,
+                    distanceKm: distanceKm,
+                    finalScore: finalScore
+                };
+            }).sort((a, b) => b.finalScore - a.finalScore);
+        }
+
+        /* ==========================================================================
+           4. DOM RENDERING & EVENT HANDLERS
+           ========================================================================== */
+        function updateBudgetDisplay(val) {
+            document.getElementById('budget-display').innerText = `₹${parseInt(val).toLocaleString('en-IN')}`;
+            currentPlannerState.budget = parseInt(val);
+        }
+
+        function updateHiddennessText(val) {
+            currentPlannerState.hiddennessLevel = parseInt(val);
+            const label = document.getElementById('hiddenness-label');
+            const map = {
+                1: "Popular (Famous Tourist Spots)",
+                2: "Balanced (Mix of popular & offbeat)",
+                3: "Hidden Gem (Prioritize lesser-known)",
+                4: "Offbeat (Low crowd & secluded)"
+            };
+            label.innerText = map[val];
+        }
+
+        function setSliderValue(val) {
+            document.getElementById('hiddenness-slider').value = val;
+            updateHiddennessText(val);
+        }
+
+        function toggleInterest(btn) {
+            const interest = btn.getAttribute('data-interest');
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                currentPlannerState.selectedInterests = currentPlannerState.selectedInterests.filter(i => i !== interest);
+            } else {
+                btn.classList.add('active');
+                currentPlannerState.selectedInterests.push(interest);
+            }
+        }
+
+        function runEngine() {
+            // Read latest form inputs
+            currentPlannerState.startLocation = document.getElementById('start-location').value;
+            currentPlannerState.duration = parseInt(document.getElementById('duration-select').value);
+            currentPlannerState.groupStyle = document.getElementById('group-select').value;
+
+            // Rank destinations
+            const ranked = rankDestinations(currentPlannerState);
+
+            // Update DOM desc
+            document.getElementById('active-filter-desc').innerText = 
+                `${currentPlannerState.startLocation} | ₹${currentPlannerState.budget.toLocaleString('en-IN')} | ${currentPlannerState.duration} Days | ${document.getElementById('hiddenness-label').innerText.split(' ')[0]}`;
+
+            // Render Cards Grid
+            renderDestinationCards(ranked);
+
+            // Render Pins on Map
+            renderMapPins(ranked);
+        }
+
+        function renderDestinationCards(destinations) {
+            const container = document.getElementById('destinations-grid');
+            container.innerHTML = '';
+
+            destinations.forEach((dest, idx) => {
+                const crowdBadgeColor = dest.crowdLevel === 'low' ? 'bg-emerald-100 text-emerald-800' : (dest.crowdLevel === 'medium' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800');
+                
+                const card = document.createElement('div');
+                card.className = "bg-brand-card rounded-3xl overflow-hidden border border-gray-100 shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col group";
+                card.innerHTML = `
+                    <div class="relative h-52 overflow-hidden">
+                        <img src="${dest.imageUrl}" alt="${dest.name}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        <div class="absolute inset-0 gradient-overlay"></div>
+                        
+                        <div class="absolute top-3 left-3 flex gap-2">
+                            <span class="bg-brand-green/90 backdrop-blur-md text-brand-accent text-[10px] font-extrabold px-3 py-1 rounded-full border border-white/10">
+                                Match Score: ${dest.finalScore}%
+                            </span>
+                        </div>
+
+                        <div class="absolute top-3 right-3">
+                            <span class="bg-brand-orange text-white text-[10px] font-extrabold px-3 py-1 rounded-full shadow-md">
+                                Hidden Gem Score: ${dest.calculatedHiddenGemScore}/100
+                            </span>
+                        </div>
+
+                        <div class="absolute bottom-3 left-3 right-3 text-white">
+                            <span class="text-[10px] uppercase font-bold text-brand-accent tracking-wider">${dest.state} • ${dest.distanceKm} km from ${currentPlannerState.startLocation}</span>
+                            <h3 class="text-xl font-extrabold text-white leading-tight">${dest.name}</h3>
+                        </div>
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                        <p class="text-xs text-brand-muted line-clamp-2 leading-relaxed">${dest.description}</p>
+
+                        <!-- Highlights Metadata -->
+                        <div class="grid grid-cols-2 gap-2 text-[11px] bg-brand-cream/40 p-3 rounded-xl border border-brand-cream">
+                            <div>
+                                <span class="text-brand-muted block text-[9px] uppercase font-bold">Est. Trip Cost</span>
+                                <span class="font-extrabold text-brand-green">₹${dest.totalTripCostEstimate.toLocaleString('en-IN')} (${currentPlannerState.duration}d)</span>
+                            </div>
+                            <div>
+                                <span class="text-brand-muted block text-[9px] uppercase font-bold">Crowd Level</span>
+                                <span class="inline-block px-2 py-0.5 rounded font-bold uppercase text-[9px] ${crowdBadgeColor}">${dest.crowdLevel}</span>
+                            </div>
+                        </div>
+
+                        <!-- Interest Tags -->
+                        <div class="flex flex-wrap gap-1.5">
+                            ${dest.interests.map(i => `<span class="bg-gray-100 text-gray-600 text-[10px] font-semibold px-2.5 py-0.5 rounded-full">${i}</span>`).join('')}
+                        </div>
+
+                        <!-- Action CTA -->
+                        <button onclick="openItineraryModal('${dest.id}')" class="w-full bg-brand-green hover:bg-brand-lightgreen text-white font-bold text-xs py-3 rounded-xl transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-route text-brand-orange"></i>
+                            <span>View Full Day-by-Day Itinerary</span>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderMapPins(destinations) {
+            const container = document.getElementById('map-pins-container');
+            container.innerHTML = '';
+
+            destinations.forEach(dest => {
+                const pin = document.createElement('div');
+                pin.className = "absolute map-pin cursor-pointer";
+                pin.style.left = `${dest.coordinates.mapX}%`;
+                pin.style.top = `${dest.coordinates.mapY}%`;
+
+                const colorClass = dest.popularityScore < 40 ? 'bg-emerald-600' : 'bg-blue-600';
+
+                pin.innerHTML = `
+                    <div class="relative group" onclick="showMapPopup('${dest.id}')">
+                        <div class="w-7 h-7 rounded-full ${colorClass} text-white flex items-center justify-center text-xs shadow-lg border-2 border-white font-bold">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <span class="absolute top-8 left-1/2 -translate-x-1/2 whitespace-nowrap bg-brand-green text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-md pointer-events-none">
+                            ${dest.name}
+                        </span>
+                    </div>
+                `;
+                container.appendChild(pin);
+            });
+        }
+
+        function showMapPopup(destId) {
+            const dest = DESTINATIONS.find(d => d.id === destId);
+            if (!dest) return;
+
+            const popup = document.getElementById('map-card-popup');
+            popup.classList.remove('hidden');
+            popup.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-[10px] font-bold text-brand-orange uppercase">${dest.state}</span>
+                    <button onclick="document.getElementById('map-card-popup').classList.add('hidden')" class="text-gray-400 hover:text-black"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <h4 class="font-extrabold text-brand-green text-base">${dest.name}</h4>
+                <p class="text-xs text-brand-muted mt-1 line-clamp-2">${dest.description}</p>
+                <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center text-xs">
+                    <div>
+                        <span class="block text-[9px] text-gray-400 font-bold uppercase">Estimated Budget</span>
+                        <span class="font-extrabold text-brand-green">₹${((dest.averageDailyBudget * currentPlannerState.duration) + dest.estimatedTransportCost).toLocaleString('en-IN')}</span>
+                    </div>
+                    <button onclick="openItineraryModal('${dest.id}')" class="bg-brand-orange text-white px-3 py-1.5 rounded-lg font-bold text-xs">Explore &rarr;</button>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           5. ITINERARY & BUDGET ENGINE MODAL GENERATOR
+           ========================================================================== */
+        function openItineraryModal(destId) {
+            const dest = DESTINATIONS.find(d => d.id === destId);
+            if (!dest) return;
+
+            const modal = document.getElementById('itinerary-modal');
+            const header = document.getElementById('modal-header-content');
+            const budgetBox = document.getElementById('modal-budget-breakdown');
+            const itineraryContainer = document.getElementById('modal-itinerary-days');
+
+            // Header Content
+            header.innerHTML = `
+                <span class="bg-brand-orange text-white text-[10px] font-extrabold px-3 py-1 rounded-full tracking-wider uppercase inline-block mb-2">
+                    Hidden Gem Score: ${calculateHiddenGemScore(dest)}/100
+                </span>
+                <h2 class="text-3xl font-extrabold text-white">${dest.name}, ${dest.state}</h2>
+                <p class="text-xs text-brand-cream/80 mt-1">${currentPlannerState.duration}-Day Tailored Itinerary starting from ${currentPlannerState.startLocation}</p>
+            `;
+
+            // Budget Breakdown Calculations
+            const transport = dest.estimatedTransportCost;
+            const accommodation = (dest.averageDailyBudget * 0.45) * currentPlannerState.duration;
+            const food = (dest.averageDailyBudget * 0.35) * currentPlannerState.duration;
+            const activities = (dest.averageDailyBudget * 0.20) * currentPlannerState.duration;
+            const total = transport + accommodation + food + activities;
+
+            budgetBox.innerHTML = `
+                <div class="bg-white p-2.5 rounded-xl border border-gray-100">
+                    <span class="text-[9px] text-brand-muted uppercase font-bold block">Transport</span>
+                    <span class="font-extrabold text-xs text-brand-green">₹${Math.round(transport)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-gray-100">
+                    <span class="text-[9px] text-brand-muted uppercase font-bold block">Stay</span>
+                    <span class="font-extrabold text-xs text-brand-green">₹${Math.round(accommodation)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-gray-100">
+                    <span class="text-[9px] text-brand-muted uppercase font-bold block">Food</span>
+                    <span class="font-extrabold text-xs text-brand-green">₹${Math.round(food)}</span>
+                </div>
+                <div class="bg-white p-2.5 rounded-xl border border-gray-100">
+                    <span class="text-[9px] text-brand-muted uppercase font-bold block">Activities</span>
+                    <span class="font-extrabold text-xs text-brand-green">₹${Math.round(activities)}</span>
+                </div>
+                <div class="bg-brand-green text-white p-2.5 rounded-xl col-span-2 sm:col-span-1">
+                    <span class="text-[9px] text-brand-accent uppercase font-bold block">Total Est.</span>
+                    <span class="font-extrabold text-xs">₹${Math.round(total)}</span>
+                </div>
+            `;
+
+            // Day-by-Day Generator
+            let daysHTML = "";
+            for (let day = 1; day <= currentPlannerState.duration; day++) {
+                daysHTML += `
+                    <div class="bg-gray-50 p-4 rounded-2xl border border-gray-100 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="bg-brand-orange text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full">Day ${day}</span>
+                            <span class="text-[11px] text-brand-muted font-bold">${day === 1 ? 'Arrival & Local Exploration' : (day === currentPlannerState.duration ? 'Hidden Gems & Departure' : 'Immersive Nature Trek')}</span>
+                        </div>
+                        <h5 class="font-extrabold text-sm text-brand-green">
+                            ${day === 1 ? `Arrive in ${dest.name} & Village Walk` : `Explore ${dest.nearbyDestinations[(day-2) % dest.nearbyDestinations.length] || 'Scenic Trails'}`}
+                        </h5>
+                        <p class="text-xs text-brand-muted leading-relaxed">
+                            ${day === 1 ? `Board early transit from ${currentPlannerState.startLocation}. Check into an authentic local homestay. Spend evening savoring local cuisines.` : 'Guided trail walk away from tourist crowds. Experience local crafts, serene viewpoints, and quiet sunsets.'}
+                        </p>
+                    </div>
+                `;
+            }
+            itineraryContainer.innerHTML = daysHTML;
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('itinerary-modal').classList.add('hidden');
+        }
+
+        function openPlannerFor(destName) {
+            scrollToSection('planner');
+            // Select Hidden Gem slider to max
+            setSliderValue(3);
+            runEngine();
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /* ==========================================================================
+           6. CONVERSATIONAL AI ENGINE SIMULATOR
+           ========================================================================== */
+        function askAI(query) {
+            document.getElementById('chat-input').value = query;
+            sendChatMessage();
+        }
+
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+
+            // Render User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = "flex gap-3 justify-end";
+            userMsg.innerHTML = `
+                <div class="bg-brand-orange text-white p-3.5 rounded-2xl rounded-tr-none max-w-[85%] space-y-1">
+                    <p>${query}</p>
+                </div>
+            `;
+            chatMessages.appendChild(userMsg);
+            input.value = "";
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Generate Smart AI Response
+            setTimeout(() => {
+                let aiResponse = "";
+                const lower = query.toLowerCase();
+
+                if (lower.includes('4,000') || lower.includes('cheap') || lower.includes('cheaper')) {
+                    aiResponse = `Based on your budget constraint, I recommend **Kanatal** or **Bundi**. You can take a sleeper train/HRTC Volvo, stay in budget homestays (~₹800/night), and easily complete a 2-3 day trip under ₹4,500 total!`;
+                } else if (lower.includes('quiet') || lower.includes('jaipur')) {
+                    aiResponse = `Near Jaipur, skip the crowded Amer Fort and head to **Bundi** (3.5 hrs away). It features blue-painted houses, stunning quiet stepwells, and 80% fewer tourists at half the price.`;
+                } else {
+                    aiResponse = `I've analyzed your preferences! I recommend checking out **Tirthan Valley** or **Kanatal**. Both offer a high Hidden Gem Score (>90/100) with low crowd levels and pristine scenic beauty.`;
+                }
+
+                const aiMsg = document.createElement('div');
+                aiMsg.className = "flex gap-3";
+                aiMsg.innerHTML = `
+                    <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
+                    <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text space-y-2">
+                        <p>${aiResponse}</p>
+                    </div>
+                `;
+                chatMessages.appendChild(aiMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 600);
+        }
+
+        function resetChat() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div class="flex gap-3">
+                    <div class="w-7 h-7 rounded-full bg-brand-green text-white flex-shrink-0 flex items-center justify-center font-bold text-[10px]">AI</div>
+                    <div class="bg-brand-cream/60 p-3.5 rounded-2xl rounded-tl-none max-w-[85%] text-brand-text space-y-2">
+                        <p>Namaste! Chat reset. How can I assist your discovery today?</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           7. INITIALIZATION ON PAGE LOAD
+           ========================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            runEngine();
+        });
+    </script>
+</body>
+</html>

@@ -1122,7 +1122,7 @@
    ========================================================================== */
 
 // Store your API key here or let the user supply one safely
-let GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
+let GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
 
 function askAI(query) {
     document.getElementById('chat-input').value = query;
@@ -1170,28 +1170,15 @@ async function sendChatMessage() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
     // 3. Make the API Call to Gemini (Updated Endpoint Model)
+    // Make the API call to your Vercel serverless function
     try {
-        const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${GEMINI_API_KEY}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    contents: [
-                        {
-                            role: "user",
-                            parts: [
-                                {
-                                    text: `You are an AI Travel Assistant for "Hidden India", an app focused on budget-friendly offbeat destinations in India. Context on active filter: Starting from ${currentPlannerState.startLocation}, budget ₹${currentPlannerState.budget}, duration ${currentPlannerState.duration} days. Answer this query concisely using bolding for key places: ${query}`
-                                }
-                            ]
-                        }
-                    ]
-                })
-            }
-        );
+        const response = await fetch('/api/chat', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query, currentPlannerState })
+        });
 
         const data = await response.json();
         
@@ -1199,7 +1186,7 @@ async function sendChatMessage() {
         document.getElementById(loadingId)?.remove();
 
         if (data.error) {
-            showAiMessage(`⚠️ Error: ${data.error.message}`);
+            showAiMessage(`⚠️ Error: ${data.error.message || data.error}`);
             return;
         }
 
@@ -1207,7 +1194,7 @@ async function sendChatMessage() {
         const candidate = data.candidates?.[0];
         const textResponse = candidate?.content?.parts?.[0]?.text || "Sorry, I couldn't process that response.";
         
-        // Render response with basic markdown formatting (* -> bold)
+        // Render response with bold formatting
         const formattedText = textResponse
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\n/g, '<br>');
@@ -1216,8 +1203,8 @@ async function sendChatMessage() {
 
     } catch (err) {
         document.getElementById(loadingId)?.remove();
-        showAiMessage("⚠️ Network error occurred while connecting to Gemini API.");
-        console.error("Gemini API Error:", err);
+        showAiMessage("⚠️ Network error occurred while connecting to AI backend.");
+        console.error("Chat Error:", err);
     }
 }
 
